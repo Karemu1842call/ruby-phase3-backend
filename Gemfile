@@ -1,6 +1,8 @@
 source "https://rubygems.org"
 
 # A DSL for quickly creating web applications
+gem 'faker'
+
 # https://github.com/sinatra/sinatra
 gem "sinatra", "~> 2.1"
 
