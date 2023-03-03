@@ -1,89 +1,95 @@
 class ApplicationController < Sinatra::Base
-  set :default_content_type, "application/json"
+  set :default_content_type, 'application/json'
+
+      # allow access-control-allow-origin header on all requests
+      before do
+        response.headers["Access-Control-Allow-Origin"] = "*"
+    end
+
+  # enable CORS preflight requests
+    options "*" do
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    end
 
   # Add your routes here
-
-  # Get
-
+  #========================
+  #get requests
   get "/" do
-    { message: "Good luck with your project!" }.to_json
+    { message: "REAL_ESTATE" }.to_json
+  end
+#get all landlords
+  get "/landlords" do
+    Landlord.all.to_json
   end
 
-  get "/cart" do
-    cart = Cart.all
-    cart.to_json
+  #get all properties
+  get "/properties" do
+    Property.all.to_json
+  end
+########get active tenants
+get '/active tenants' do 
+  Tenant.all.count.to_json
+end
+
+get "/total properties" do
+  Property.all.count.to_json
+end
+
+get '/month rent'  do
+  sum = Tenant.sum(:rent)
+  res =(sum * 28) 
+  res.to_json
+end
+
+#####
+  #get all tenants
+  get "/tenants" do
+    Tenant.all.to_json
   end
 
-  get "/product" do
-    product = Product.all
-    product.to_json
+  #post requests(create property and tenant)
+# Creating property
+    post '/properties' do
+        property = Property.create(
+            location: params[:location],
+            property_type: params[:property_type],
+            property_name: params[:property_name],
+            property_size: params[:property_size],
+            landlord_id: params[:landlord_id],
+        ).to_json
+      
+    end
+
+#creating tenant
+    post '/tenant' do
+      tenant = Tenant.create(
+        name: params[:name],
+        email: params[:email],
+        phone_number: params[:phone_number],
+        rent: params[:rent],
+    ).to_json
   end
 
-  get "/user" do
-    user = User.all
-    user.to_json
-  end
+  #patch requests(tenant)
+  patch '/tenant/:id' do
+    tenant = Tenant.find(params[:id])
+    tenant.update(
+        name: params[:name],
+        email: params[:email],
+        phone_number: params[:phone_number],
+        property_id: params[:property_id],
+    )
+end
 
-  # All get methods functioning effectively
+#delete requests (tenant,property)
+delete '/tenant/:id' do
+  tenant = Tenant.find(params[:id])
+  tenant.destroy
+end
 
-  # Post methods
+delete '/properties/:id' do
+  property = Property.find(params[:id])
+  property.destroy
+end
 
-  post "/cart" do
-    cart = Cart.create(quantity: params[:quantity])
-    cart.to_json
-  end
-
-  post "/product" do
-    product = Product.create(productName: params[:productName], price: params[:price], productImage: params[:productImage])
-    product.to_json
-  end
-
-  post "/user" do
-    user = User.create(name: params[:name], email: params[:email], tel_no: params[:tel_no])
-    user.to_json
-  end
-
-  # All post methods work
-
-  # Delete methods
-  delete "/cart/:id" do
-    cart = Cart.find(params[:id])
-    cart.destroy
-    cart.to_json
-  end
-
-  delete "/product/:id" do
-    product = Product.find(params[:id])
-    product.destroy
-    product.to_json
-  end
-
-  delete "/user/:id" do
-    user = User.find(params[:id])
-    user.destroy
-    user.to_json
-  end
-
-  # All delete controllers work
-
-  # Patch
-
-  patch "/cart/:id" do
-    cart = Cart.find(params[:id])
-    cart.update(quantity: params[:quantity])
-    cart.to_json
-  end
-
-  patch "/product/:id" do
-    product = Product.find(params[:id])
-    product.update(productName: params[:productName], price: params[:price], productImage: params { :productImage })
-    product.to_json
-  end
-
-  patch "/user/:id" do
-    user = User.find(params[:id])
-    user.update(name: params[:name], email: params[:email], tel_no: params[:tel_no])
-    user.to_json
-  end
-  
 end

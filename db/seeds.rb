@@ -1,15 +1,44 @@
 puts "🌱 Seeding spices..."
 
-# Seed your database here
-products = Product.create([{ productName: Faker::Vehicle.manufacture, price: 2000000, productImage: "https://beemashine.com/wp-content/uploads/2021/08/BEST-SUV-KENYA.jpeg" }]),
-products = Product.create([{ productName: Faker::Vehicle.manufacture, price: 2000000, productImage: "https://www.cnet.com/a/img/resize/ab6a393139e51746d7d2280434c9f814b7dc96bc/hub/2021/04/19/31132fa6-2622-4ebe-995a-f52e20b7b218/2022-hyundai-tucson-limited-awd-ogi.jpg?auto=webp" }]),
-products = Product.create([{ productName: Faker::Vehicle.manufacture, price: 2000000, productImage: "https://www.budget.com/content/dam/cars/xl/2021/cadillac/2021-cadillac-escalade-esv-600-sport-suv-black_passenger.png" }]),
-products = Product.create([{ productName: Faker::Vehicle.manufacture, price: 2000000, productImage: "https://inv.assets.sincrod.com/2/4/5/31802092542.jpg" }]),
-cart = Cart.create([{ quantity: 3 }]),
-cart = Cart.create([{ quantity: 4 }]),
-cart = Cart.create([{ quantity: 12 }]),
-user = User.create([{ name: Faker::Name.name_with_middle, email: Faker::Internet.email, tel_no: Faker::PhoneNumber.phone_number_with_country_code }])
-user = User.create([{ name: Faker::Name.name_with_middle, email: Faker::Internet.email, tel_no: Faker::PhoneNumber.phone_number_with_country_code }])
-user = User.create([{ name: Faker::Name.name_with_middle, email: Faker::Internet.email, tel_no: Faker::PhoneNumber.phone_number_with_country_code }])
+
+  10.times do
+    Landlord.create(
+      name: Faker::Name.name(),
+      phone_number: Faker::Number.number(digits: 10),
+      email: Faker::Internet.email(),
+      img_url: Faker::Avatar.image
+    )
+  end
+
+
+Landlord.all.each do |landlord|
+  10.times do
+    Property.create(
+      location: Faker::Address.city,
+      property_type: "#{Faker::Number.between(from: 2, to: 4)} Bedrooms",
+      property_name: Faker::Name.name(),
+      property_size: "#{Faker::Number.between(from: 600, to: 2000)} sq ft",
+      landlord_id: landlord.id
+        
+    )
+  end
+end
+
+Property.all.each do |property|
+  10.times do
+    Tenant.create(
+      name: Faker::Name.name(),
+      email: Faker::Internet.email(),
+      phone_number: Faker::Number.number(digits: 10),
+      rent: Faker::Number.between(from: 10000, to: 60000),
+      property_id: property.id
+
+    )
+  end
+end
+
+
+
+
 
 puts "✅ Done seeding!"
